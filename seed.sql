@@ -1,37 +1,31 @@
--- ============================================================
 -- Iron District Gym Membership Management System
 -- Seed Data Script  |  CS 4347 Project Part 2  |  Team 12
 -- DBMS: PostgreSQL
--- ============================================================
-
--- TABLE SIZE ESTIMATES
--- ┌─────────────────────────┬────────────┬──────────────────────────────────────┐
--- │ Table                   │ Seed Rows  │ Realistic Annual Scale               │
--- ├─────────────────────────┼────────────┼──────────────────────────────────────┤
--- │ MembershipPlan          │          3 │ 3  (static reference data)           │
--- │ Employee                │         30 │ 25–30 active at any time             │
--- │ Trainer                 │         12 │ 12 active trainers                   │
--- │ Room                    │          6 │ 6  (static facility data)            │
--- │ Member                  │         50 │ ~2,000 active; 1,200 new/year        │
--- │ Class                   │         20 │ ~3,600 sessions/year (70/week)       │
--- │ ClassEnrollment         │        150 │ ~54,000 records/year (15/session)    │
--- │ Payment                 │        100 │ ~30,000 transactions/year            │
--- │ PersonalTrainingSession │         50 │ ~5,000 sessions/year (95/week)       │
--- └─────────────────────────┴────────────┴──────────────────────────────────────┘
 
 
--- ============================================================
+-- Table size estimates (seed rows vs. realistic scale)
+-- MembershipPlan:          3 rows  (3 plan types, static)
+-- Employee:               30 rows  (25-30 active at any time)
+-- Trainer:                12 rows  (12 active trainers)
+-- Room:                    6 rows  (6 rooms in facility, static)
+-- Member:                 50 rows  (~2,000 active members, 1,200 new/year)
+-- Class:                  20 rows  (~3,600 sessions/year, 70/week)
+-- ClassEnrollment:       150 rows  (~54,000 records/year, avg 15/session)
+-- Payment:               100 rows  (~30,000 transactions/year)
+-- PersonalTrainingSession: 50 rows  (~5,000 sessions/year, 95/week)
+
+
+
 -- 1. MembershipPlan  (3 rows)
--- ============================================================
+
 INSERT INTO MembershipPlan (plan_id, plan_name, price, duration_months, access_level) VALUES
 (1, 'Basic',    29.99, 1, 'Basic'),
 (2, 'Standard', 49.99, 1, 'Standard'),
 (3, 'Premium',  79.99, 1, 'Premium');
 
 
--- ============================================================
 -- 2. Employee  (30 rows: 12 Trainers, 10 Front Desk, 8 Cleaners)
--- ============================================================
+
 INSERT INTO Employee (employee_id, first_name, last_name, role, employment_status) VALUES
 (1,  'Marcus',   'Rivera',     'Trainer',     'Active'),
 (2,  'Jordan',   'Bennett',    'Trainer',     'Active'),
@@ -65,9 +59,8 @@ INSERT INTO Employee (employee_id, first_name, last_name, role, employment_statu
 (30, 'Pablo',    'Vega',       'Cleaner',     'Active');
 
 
--- ============================================================
 -- 3. Trainer  (12 rows — each references a unique Employee)
--- ============================================================
+
 INSERT INTO Trainer (trainer_id, employee_id, specialization) VALUES
 (1,  1,  'Strength Training'),
 (2,  2,  'Powerlifting'),
@@ -83,9 +76,8 @@ INSERT INTO Trainer (trainer_id, employee_id, specialization) VALUES
 (12, 12, 'Flexibility & Stretching');
 
 
--- ============================================================
 -- 4. Room  (6 rows — matches facility description in proposal)
--- ============================================================
+
 INSERT INTO Room (room_id, room_name, capacity, purpose) VALUES
 (1, 'Group Fitness Studio A', 40, 'Group Fitness'),
 (2, 'Group Fitness Studio B', 35, 'Group Fitness'),
@@ -95,10 +87,9 @@ INSERT INTO Room (room_id, room_name, capacity, purpose) VALUES
 (6, 'Multipurpose Room',      30, 'Multipurpose');
 
 
--- ============================================================
 -- 5. Member  (50 rows)
 -- Plans cycle 2-3-1 so all three plans are well represented
--- ============================================================
+
 INSERT INTO Member (member_id, first_name, last_name, email, phone, join_date, plan_id) VALUES
 (1,  'James',     'Carter',     'jcarter@email.com',     '214-555-0101', '2022-03-15', 2),
 (2,  'Aisha',     'Williams',   'awilliams@email.com',   '214-555-0102', '2022-05-22', 3),
@@ -152,13 +143,12 @@ INSERT INTO Member (member_id, first_name, last_name, email, phone, join_date, p
 (50, 'Leah',      'Howard',     'lhoward@email.com',     '214-555-0150', '2025-03-25', 3);
 
 
--- ============================================================
 -- 6. Class  (20 rows)
 -- Business rules enforced:
 --   • No trainer leads two classes at the same date+time
 --   • Each class assigned to exactly one trainer and one room
 --   • Capacity does not exceed room capacity
--- ============================================================
+
 INSERT INTO Class (class_id, class_name, schedule_date, schedule_time, capacity, trainer_id, room_id) VALUES
 (1,  'Yoga Flow',             '2025-01-06', '09:00:00', 20, 4,  4),
 (2,  'HIIT Blast',            '2025-01-06', '10:00:00', 30, 3,  1),
@@ -182,12 +172,11 @@ INSERT INTO Class (class_id, class_name, schedule_date, schedule_time, capacity,
 (20, 'CrossFit Fundamentals', '2025-01-20', '17:00:00', 20, 9,  1);
 
 
--- ============================================================
 -- 7. ClassEnrollment  (150 rows)
 -- Business rules enforced:
---   • enrollment_date <= class schedule_date
---   • No member enrolled in the same class more than once
--- ============================================================
+--   * enrollment_date <= class schedule_date
+--   * No member enrolled in the same class more than once
+
 INSERT INTO ClassEnrollment (enrollment_id, member_id, class_id, enrollment_date) VALUES
 -- Class 1: Yoga Flow  01-06  (8 enrollments, cap 20)
 (1,   1,  1, '2024-12-20'),
@@ -361,12 +350,11 @@ INSERT INTO ClassEnrollment (enrollment_id, member_id, class_id, enrollment_date
 (150, 25, 20, '2025-01-17');
 
 
--- ============================================================
 -- 8. Payment  (100 rows)
 -- Amounts match each member's current plan price:
 --   Basic=$29.99  Standard=$49.99  Premium=$79.99
 -- PT payments use a flat $75.00 session rate
--- ============================================================
+
 INSERT INTO Payment (payment_id, member_id, amount, payment_date, payment_type) VALUES
 -- Initial membership payments (1 per member, rows 1–50)
 (1,  1,  49.99, '2022-03-15', 'Membership'),
@@ -474,14 +462,13 @@ INSERT INTO Payment (payment_id, member_id, amount, payment_date, payment_type) 
 (100, 25, -15.00, '2025-03-19', 'Adjustment');
 
 
--- ============================================================
 -- 9. PersonalTrainingSession  (50 rows)
 -- Business rules enforced:
---   • Each session links exactly one member + one trainer
---   • No member has two sessions with the same trainer on the same date
---   • Duration: 30, 45, or 60 minutes
---   • Cost: $60.00 (30 min), $75.00 (45 min), $90.00 (60 min)
--- ============================================================
+--   * Each session links exactly one member + one trainer
+--   * No member has two sessions with the same trainer on the same date
+--   * Duration: 30, 45, or 60 minutes
+--   * Cost: $60.00 (30 min), $75.00 (45 min), $90.00 (60 min)
+
 INSERT INTO PersonalTrainingSession (session_id, member_id, trainer_id, session_date, duration, cost) VALUES
 (1,  1,  1,  '2025-01-08', 45, 75.00),
 (2,  5,  3,  '2025-01-10', 60, 90.00),
