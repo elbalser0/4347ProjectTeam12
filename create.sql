@@ -76,8 +76,8 @@ CREATE TABLE Member (
 CREATE TABLE Payment (
     payment_id   SERIAL          PRIMARY KEY,
     member_id    INTEGER         NOT NULL REFERENCES Member(member_id),
-    amount       DECIMAL(10, 2)  NOT NULL CHECK (amount >= -9999.99),
-    payment_date DATE            NOT NULL,
+    amount       DECIMAL(10, 2)  NOT NULL CHECK (amount >= 0.00),
+    payment_date DATE            NOT NULL CHECK (payment_date <= CURRENT_DATE),
     payment_type VARCHAR(20)     NOT NULL CHECK (payment_type IN ('Membership', 'Personal Training', 'Fee', 'Adjustment'))
 );
 
