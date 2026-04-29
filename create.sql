@@ -61,13 +61,15 @@ CREATE TABLE Room (
 -- FK: plan_id -> MembershipPlan
 
 CREATE TABLE Member (
-    member_id  SERIAL       PRIMARY KEY,
-    first_name VARCHAR(50)  NOT NULL,
-    last_name  VARCHAR(50)  NOT NULL,
-    email      VARCHAR(100) NOT NULL UNIQUE,
-    phone      VARCHAR(20)  NOT NULL,
-    join_date  DATE         NOT NULL,
-    plan_id    INTEGER      NOT NULL REFERENCES MembershipPlan(plan_id)
+    member_id         SERIAL       PRIMARY KEY,
+    first_name        VARCHAR(50)  NOT NULL,
+    last_name         VARCHAR(50)  NOT NULL,
+    email             VARCHAR(100) NOT NULL UNIQUE,
+    phone             VARCHAR(20)  NOT NULL,
+    join_date         DATE         NOT NULL,
+    plan_id           INTEGER      NOT NULL REFERENCES MembershipPlan(plan_id),
+    membership_status VARCHAR(10)  NOT NULL DEFAULT 'Active'
+                          CHECK (membership_status IN ('Active', 'Expired', 'Cancelled', 'Paused'))
 );
 
 -- 6. Payment
@@ -76,7 +78,7 @@ CREATE TABLE Member (
 CREATE TABLE Payment (
     payment_id   SERIAL          PRIMARY KEY,
     member_id    INTEGER         NOT NULL REFERENCES Member(member_id),
-    amount       DECIMAL(10, 2)  NOT NULL CHECK (amount >= 0.00),
+    amount       DECIMAL(10, 2)  NOT NULL CHECK (amount >= 0.00 OR payment_type = 'Adjustment'),
     payment_date DATE            NOT NULL CHECK (payment_date <= CURRENT_DATE),
     payment_type VARCHAR(20)     NOT NULL CHECK (payment_type IN ('Membership', 'Personal Training', 'Fee', 'Adjustment'))
 );
