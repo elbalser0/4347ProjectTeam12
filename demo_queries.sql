@@ -31,13 +31,19 @@ ORDER BY c.schedule_date, c.schedule_time
 LIMIT 20;
 
 
--- Query 4: Revenue Breakdown by Payment Type
-SELECT payment_type,
-       COUNT(*)              AS transactions,
-       SUM(amount)           AS total_revenue,
-       ROUND(AVG(amount), 2) AS avg_amount
-FROM Payment
-GROUP BY payment_type
+-- Query 4: Revenue Breakdown by Membership Plan
+SELECT
+    mp.plan_name,
+    COUNT(p.payment_id) AS total_payments,
+    mp.price,
+    COUNT(p.payment_id) * mp.price AS total_revenue
+FROM membershipplan mp
+JOIN member m ON m.plan_id = mp.plan_id
+JOIN payment p ON p.member_id = m.member_id
+WHERE p.payment_date >= '2025-01-01'
+  AND p.payment_date <= '2025-01-31'
+  AND p.payment_type = 'Membership'
+GROUP BY mp.plan_id, mp.plan_name, mp.price
 ORDER BY total_revenue DESC;
 
 
