@@ -51,12 +51,12 @@ Shows exactly how much each membership tier contributed to revenue during the mo
 
 ---
 
-## Query 5: Weekly Class Schedule (Jan 6–10, 2025)
+## Query 5: Room Schedule for a Two-Week Period (Jan 6–20, 2025)
 
 **What it does:**
-Displays the full class schedule for a given week, including the date, time, class name, which room it is in, which trainer is leading it, how many members are currently enrolled, and the total capacity of the class.
+Displays the schedule for a specified room over a two-week window, showing the date, time, class name, leading trainer, number of enrolled members, and maximum class capacity. Results are sorted chronologically by date and time.
 
 **Why it matters:**
-This is the most complete operational view in the database. It allows gym managers to see at a glance which classes are filling up, which rooms are in use, and how trainers are allocated across the week. The enrolled vs. capacity column immediately highlights availability.
+Gives gym managers a clear operational view of how a specific room is being utilized across two weeks. The enrolled vs. capacity figures immediately highlight how full each session is, and the trainer column shows who is responsible for each class — useful for both scheduling and resource allocation.
 
-**Tables used:** `Class`, `Room`, `Trainer`, `Employee`, `ClassEnrollment`
+**Tables used:** `Class`, `Room`, `Employee`, `ClassEnrollment`
