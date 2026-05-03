@@ -46,7 +46,8 @@ Joins the MembershipPlan, Member, and Payment tables to calculate the total numb
 
 **Why it matters:**
 Shows exactly how much each membership tier contributed to revenue during the month. By isolating payment_type = 'Membership' and filtering to January 2025, it gives a focused monthly snapshot useful for financial reporting and evaluating which plans are most popular and profitable.
-**Tables used:** 'MembershipPlan', 'Member', 'Payment'
+
+**Tables used:** MembershipPlan, Member, Payment
 
 ---
 
