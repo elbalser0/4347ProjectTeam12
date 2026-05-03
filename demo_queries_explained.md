@@ -39,15 +39,14 @@ This is the core operational query of the gym — it answers "who is showing up,
 
 ---
 
-## Query 4: Revenue Breakdown by Payment Type
+## Query 4: Revenue Breakdown by Membership Plan (January 2025)
 
 **What it does:**
-Groups all payment records by type (Membership, Personal Training, Fee, Adjustment) and calculates the total number of transactions, total revenue, and average payment amount for each category.
+Joins the MembershipPlan, Member, and Payment tables to calculate the total number of membership payments made in January 2025 for each plan. It then multiplies that count by the plan's price to derive total revenue per plan.
 
 **Why it matters:**
-Shows exactly where the gym's money comes from. Membership payments make up the bulk of revenue ($4,289), while Personal Training sessions add a significant secondary income stream ($1,125). This kind of aggregate analysis is essential for financial reporting and business planning.
-
-**Tables used:** `Payment`
+Shows exactly how much each membership tier contributed to revenue during the month. By isolating payment_type = 'Membership' and filtering to January 2025, it gives a focused monthly snapshot useful for financial reporting and evaluating which plans are most popular and profitable.
+**Tables used:** 'MembershipPlan', 'Member', 'Payment'
 
 ---
 
