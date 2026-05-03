@@ -47,20 +47,20 @@ GROUP BY mp.plan_id, mp.plan_name, mp.price
 ORDER BY total_revenue DESC;
 
 
--- Query 5: Weekly Class Schedule (Jan 6–10, 2025)
-SELECT c.schedule_date,
-       c.schedule_time,
-       c.class_name,
-       r.room_name,
-       e.first_name || ' ' || e.last_name AS trainer,
-       COUNT(ce.enrollment_id)             AS enrolled,
-       c.capacity
-FROM Class c
-JOIN Room r                  ON c.room_id    = r.room_id
-JOIN Trainer t               ON c.trainer_id = t.trainer_id
-JOIN Employee e              ON t.employee_id = e.employee_id
-LEFT JOIN ClassEnrollment ce ON c.class_id   = ce.class_id
-WHERE c.schedule_date BETWEEN '2025-01-06' AND '2025-01-10'
-GROUP BY c.class_id, c.schedule_date, c.schedule_time,
-         c.class_name, r.room_name, e.first_name, e.last_name, c.capacity
-ORDER BY c.schedule_date, c.schedule_time;
+-- Query 5: 2-Week Room Schedule (Jan 6–20, 2025)
+SELECT
+    r.room_name AS room,
+    c.schedule_date AS date,
+    c.schedule_time AS time,
+    c.class_name AS class,
+    e.first_name || ' ' || e.last_name AS trainer,
+    COUNT(ce.enrollment_id) AS enrolled,
+    c.capacity AS max_capacity
+FROM class c
+JOIN room r ON c.room_id = r.room_id
+JOIN employee e ON c.trainer_id = e.employee_id
+LEFT JOIN classenrollment ce ON ce.class_id = c.class_id
+WHERE r.room_id = 1 AND c.schedule_date BETWEEN '2025-01-06' AND '2025-01-20'
+GROUP BY r.room_name, c.schedule_date, c.schedule_time, 
+         c.class_name, e.first_name, e.last_name, c.capacity
+ORDER BY date, time;
